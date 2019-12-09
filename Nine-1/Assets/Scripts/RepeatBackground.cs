@@ -13,20 +13,25 @@ public class RepeatBackground : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        //playerControllerScript = GameObject.Find("Player").GetComponent<PlayerController>();
+        playerControllerScript = GameObject.Find("Player").GetComponent<PlayerController>();
 
         startPos = transform.position;
-        repeatHeight = 22;
+        repeatHeight = 91.7f;
     }
 
     // Update is called once per frame
     void Update()
     {
-        //if (!playerControllerScript.isGameOver == false)
-        //{
+        if (/*!playerControllerScript.isGameOver == false && */gameObject.CompareTag("BackgroundUp"))
+        {
             transform.Translate(Vector3.up * Time.deltaTime * speed);
-        //}
-        
+        }
+
+        if (/*!playerControllerScript.isGameOver == false && */gameObject.CompareTag("BackgroundDown"))
+        {
+            transform.Translate(Vector3.down * Time.deltaTime * speed);
+        }
+
         if (transform.position.z < startPos.z - repeatHeight)
         {
             transform.position = startPos;

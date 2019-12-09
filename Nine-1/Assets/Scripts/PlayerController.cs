@@ -8,7 +8,7 @@ public class PlayerController : MonoBehaviour
     private float heightBoundary = 11.0f;
     private float roadWidth = 15.0f;
     private float moveSpeed = 10.0f;
-    private float turnSpeed = 1.0f;
+    private float turnSpeed = 15.0f;
     private float directionalInput;
     private float velocityInput;
 
@@ -34,7 +34,9 @@ public class PlayerController : MonoBehaviour
     public float latency = 0.0f;
     public bool isOnRoad = true;
     public bool isGameOver = false;
-    
+
+    public float sample;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -45,14 +47,12 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        // Game over situation
-        if (health<1)
-        {
-            isGameOver = true;
-            playerAudio.PlayOneShot(explosionSfx);
-            explosionVisual.Play();
-        }
+        PlayerControls();
+        GameObjectives();
+    }
 
+    public void PlayerControls()
+    {
         // Movement boundaries
         if (playerRb.transform.position.x > widthBoundary)
         {
@@ -73,11 +73,11 @@ public class PlayerController : MonoBehaviour
 
 
         // Player Controls
-        if (
+        if (/*
             playerRb.transform.position.x < widthBoundary && 
             playerRb.transform.position.x > -widthBoundary && 
             playerRb.transform.position.z < heightBoundary && 
-            playerRb.transform.position.z > -heightBoundary &&
+            playerRb.transform.position.z > -heightBoundary &&*/
             !isGameOver
             )
         {
@@ -101,8 +101,19 @@ public class PlayerController : MonoBehaviour
 
             transform.Translate(Vector3.forward * Time.deltaTime * velocityInput * moveSpeed);
             transform.Translate(Vector3.right * Time.deltaTime * directionalInput * moveSpeed);
-            transform.Rotate(Vector3.up * Time.deltaTime * directionalInput * turnSpeed);
-            
+            //transform.Rotate(Vector3.up * Time.deltaTime * directionalInput * turnSpeed);
+            /*
+            sample = playerRb.transform.rotation.y;
+
+            while (playerRb.transform.rotation.y < 0)
+            {
+                transform.Rotate(Vector3.up * Time.deltaTime * turnSpeed);
+            }
+            while (playerRb.transform.rotation.y > 0)
+            {
+                transform.Rotate(Vector3.down * Time.deltaTime * turnSpeed);
+            }*/
+
             // Weapon firing
             if (Input.GetKeyDown(KeyCode.Space))
             {
@@ -120,6 +131,17 @@ public class PlayerController : MonoBehaviour
                 Instantiate(projectilePrefab, transform.position, projectilePrefab.transform.rotation);
                 */
             }
+        }
+    }
+
+    public void GameObjectives()
+    {
+        // Game over situation
+        if (health < 1)
+        {
+            isGameOver = true;
+            playerAudio.PlayOneShot(explosionSfx);
+            explosionVisual.Play();
         }
     }
 

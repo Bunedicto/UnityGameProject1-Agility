@@ -18,9 +18,24 @@ public class Traffic : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!playerControllerScript.isGameOver)
+        if (!playerControllerScript.isGameOver && trafficHit == false)
         {
             transform.Translate(Vector3.back * speed * Time.deltaTime, Space.World);
         }
+        if (!playerControllerScript.isGameOver && trafficHit == true)
+        {
+            transform.Translate(Vector3.back * (speed / 2) * Time.deltaTime, Space.World);
+        }
     }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.rigidbody.CompareTag("Traffic"))
+        {
+            trafficHit = true;
+            //playerAudio.PlayOneShot(collisionSfx);
+            //sparkEffects.Play();
+        }
+    }
+    */
 }
