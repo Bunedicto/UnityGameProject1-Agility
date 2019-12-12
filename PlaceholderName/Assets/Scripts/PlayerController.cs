@@ -9,7 +9,7 @@ public class PlayerController : MonoBehaviour
 
     private float widthBoundary = 25.0f;
     private float heightBoundary = 11.0f;
-    private float roadWidth = 15.0f;
+    private float roadWidth = 11.0f;
     private float moveSpeed = 10.0f;
     private float turnSpeed = 15.0f;
     private float directionalInput;
@@ -154,7 +154,7 @@ public class PlayerController : MonoBehaviour
     private void OnCollisionEnter(Collision collision)
     {
         // Collision with object containing "Traffic" tag
-        if (collision.rigidbody.CompareTag("Traffic"))
+        if (collision.gameObject.CompareTag("Traffic"))
         {
             health -= 5.0f;
             playerAudio.PlayOneShot(collisionSfx);
@@ -162,7 +162,7 @@ public class PlayerController : MonoBehaviour
         }
 
         // Collision with object containing "Rival" tag
-        if (collision.rigidbody.CompareTag("Rival"))
+        if (collision.gameObject.CompareTag("Rival"))
         {
             health -= 2.0f;
             playerAudio.PlayOneShot(collisionSfx);

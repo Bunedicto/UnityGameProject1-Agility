@@ -7,6 +7,7 @@ TagManager:
   - BackgroundUp
   - BackgroundDown
   - Traffic
+  - Rival
   layers:
   - Default
   - TransparentFX
