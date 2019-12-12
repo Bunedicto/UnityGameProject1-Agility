@@ -6,6 +6,11 @@ public class PlayerController : MonoBehaviour
 {
     private Rigidbody playerRb;
     private AudioSource playerAudio;
+    private GameManager gameManager;
+    private Rival rival1;
+    private Rival rival2;
+    private Rival rival3;
+    private Rival rival4;
 
     private float widthBoundary = 25.0f;
     private float heightBoundary = 11.0f;
@@ -16,6 +21,7 @@ public class PlayerController : MonoBehaviour
     private float velocityInput;
 
     public float health = 100.0f;
+    public int position = 4;
 
     public GameObject projectilePrefab;
     public AudioClip dirtSfx;
@@ -43,6 +49,12 @@ public class PlayerController : MonoBehaviour
         // Player's Rigidbody and AudioSource component
         playerRb = GetComponent<Rigidbody>();
         playerAudio = GetComponent<AudioSource>();
+
+        gameManager = GameObject.Find("Game Manager").GetComponent<GameManager>();
+        rival1 = GameObject.Find("Rival").GetComponent<Rival>();
+        rival2 = GameObject.Find("Rival2").GetComponent<Rival>();
+        rival3 = GameObject.Find("Rival3").GetComponent<Rival>();
+        rival4 = GameObject.Find("Rival4").GetComponent<Rival>();
     }
 
     // Update is called once per frame
@@ -80,7 +92,7 @@ public class PlayerController : MonoBehaviour
             playerRb.transform.position.x > -widthBoundary && 
             playerRb.transform.position.z < heightBoundary && 
             playerRb.transform.position.z > -heightBoundary &&*/
-            !isGameOver
+            gameManager.isGameActive
             )
         {
             /*
@@ -140,14 +152,71 @@ public class PlayerController : MonoBehaviour
     public void GameObjectives()
     {
         // Game over situation
-        if (health < 1)
+        if (health < 0.1)
         {
-            isGameOver = true;
             playerAudio.PlayOneShot(explosionSfx);
             explosionVisual.Play();
 
             Destroy(gameObject);
         }
+
+        positionCounter(rival1);
+        positionCounter(rival2);
+        positionCounter(rival3);
+        positionCounter(rival4);
+
+        void positionCounter(Rival rival)
+        {
+            if (playerRb.transform.position.z > rival.transform.position.z)
+            {
+                position = 1;
+            }
+            else
+            if (playerRb.transform.position.z < rival.transform.position.z)
+            {
+                position = 4;
+            }
+        }
+
+        //// Rival 1 position check
+        //if (playerRb.transform.position.z > rival1.transform.position.z)
+        //{
+        //    position -= 1;
+        //} else 
+        //if (playerRb.transform.position.z < rival1.transform.position.z)
+        //{
+        //    position += 1;
+        //}
+        //// Rival 2 position check
+        //if (playerRb.transform.position.z > rival2.transform.position.z)
+        //{
+        //    position -= 1;
+        //}
+        //else
+        //if (playerRb.transform.position.z < rival2.transform.position.z)
+        //{
+        //    position += 1;
+        //}
+        //// Rival 3 position check
+        //if (playerRb.transform.position.z > rival3.transform.position.z)
+        //{
+        //    position -= 1;
+        //}
+        //else
+        //if (playerRb.transform.position.z < rival3.transform.position.z)
+        //{
+        //    position += 1;
+        //}
+        //// Rival 4 position check
+        //if (playerRb.transform.position.z > rival4.transform.position.z)
+        //{
+        //    position -= 1;
+        //}
+        //else
+        //if (playerRb.transform.position.z < rival4.transform.position.z)
+        //{
+        //    position += 1;
+        //}
     }
 
     // Unity collision component
@@ -157,16 +226,16 @@ public class PlayerController : MonoBehaviour
         if (collision.gameObject.CompareTag("Traffic"))
         {
             health -= 5.0f;
-            playerAudio.PlayOneShot(collisionSfx);
-            sparkEffects.Play();
+            //playerAudio.PlayOneShot(collisionSfx);
+            //sparkEffects.Play();
         }
 
         // Collision with object containing "Rival" tag
         if (collision.gameObject.CompareTag("Rival"))
         {
             health -= 2.0f;
-            playerAudio.PlayOneShot(collisionSfx);
-            sparkEffects.Play();
+            //playerAudio.PlayOneShot(collisionSfx);
+            //sparkEffects.Play();
         }
     }
 }

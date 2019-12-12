@@ -7,6 +7,7 @@ public class Rival : MonoBehaviour
     private Rigidbody rivalRb;
     private AudioSource rivalAudio;
     private GameObject player;
+    private GameManager gameManager; 
 
     private float widthBoundary = 25.0f;
     private float heightBoundary = 11.0f;
@@ -31,10 +32,9 @@ public class Rival : MonoBehaviour
     public ParticleSystem dirtMarks;
 
     public bool delay = false;      // Usage: if "Time.time>latency" then "latency = Time.time + interval"
-    public float interval = 1.0f;
-    public float latency = 0.0f;
+    public float interval = 5.0f;
+    public float latency = 5.0f;
     public bool isOnRoad = true;
-    public bool isGameOver = false;
     public bool stop = false;
 
     public bool crashingPlayer = false;
@@ -50,13 +50,19 @@ public class Rival : MonoBehaviour
 
         // Finding player's GameObject
         player = GameObject.Find("Player");
+
+        // Get game manager
+        gameManager = GameObject.Find("Game Manager").GetComponent<GameManager>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        RivalMovement();
-        GameObjectives();
+        if (gameManager.isGameActive)
+        {
+            RivalMovement();
+            GameObjectives();
+        }
     }
 
     // Rival Movement
@@ -87,7 +93,7 @@ public class Rival : MonoBehaviour
         //rivalRb.AddForce(lookDirection * moveSpeed);
 
         // Rival movement
-        if (transform.position.x > -11 && transform.position.x < 11)
+        if (transform.position.x > -roadWidth && transform.position.x < roadWidth)
         {
             if (transform.position.z < 20 && stop == false)
             {
@@ -110,14 +116,16 @@ public class Rival : MonoBehaviour
         {
             if (!crashingPlayer || Input.GetKeyDown(KeyCode.Q))
             {
-                if (transform.position.x < -11)
+                if (transform.position.x < -roadWidth)
                 {
-                    transform.Translate(Vector3.back * Time.deltaTime * turnSpeed);
+                    transform.Translate((Vector3.back+Vector3.left) * Time.deltaTime * turnSpeed);
+                    Debug.Log("Go back" + transform.position.x);
                 }
 
-                if (transform.position.x > 11)
+                if (transform.position.x > roadWidth)
                 {
-                    transform.Translate(Vector3.forward * Time.deltaTime * turnSpeed);
+                    transform.Translate((Vector3.forward + Vector3.left) * Time.deltaTime * turnSpeed);
+                    Debug.Log("Go back" + transform.position.x);
                 }
 
             }
@@ -162,6 +170,17 @@ public class Rival : MonoBehaviour
             //explosionVisual.Play();
             Destroy(gameObject);
         }
+
+        if (crashingPlayer == true)
+        {
+            interval -= Time.deltaTime;
+            if (interval<0)
+            {
+                crashingPlayer = false;
+                Debug.Log("success");
+                interval = latency;
+            }
+        }
     }
 
     // Unity collision component
@@ -170,7 +189,7 @@ public class Rival : MonoBehaviour
         // Collision with object containing "Traffic" tag
         if (collision.gameObject.CompareTag("Traffic"))
         {
-            health -= 5.0f;
+            //health -= 5.0f;
             //rivalAudio.PlayOneShot(collisionSfx);
             //sparkEffects.Play();
             crashingTraffic = true;
@@ -183,14 +202,10 @@ public class Rival : MonoBehaviour
         // Collision with object containing "Player" tag
         if (collision.gameObject.CompareTag("Player"))
         {
-            health -= 10.0f;
+            //health -= 10.0f;
             //rivalAudio.PlayOneShot(collisionSfx);
             //sparkEffects.Play();
             crashingPlayer = true;
-        }
-        else
-        {
-            //crashingPlayer = false;
         }
     }
 }

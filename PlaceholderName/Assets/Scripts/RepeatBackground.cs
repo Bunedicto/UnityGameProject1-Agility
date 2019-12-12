@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class RepeatBackground : MonoBehaviour
 {
-    private PlayerController playerControllerScript;
+    private GameManager gameManager;
     public float speed = 0.0f;
     public float speedLimit = 10.0f;
 
@@ -14,8 +14,8 @@ public class RepeatBackground : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        // Get player controller
-        playerControllerScript = GameObject.Find("Player").GetComponent<PlayerController>();
+        // Get game manager
+        gameManager = GameObject.Find("Game Manager").GetComponent<GameManager>();
 
         // Starting position
         startPos = transform.position;
@@ -24,30 +24,33 @@ public class RepeatBackground : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (speed < 200.0f)
+        if (gameManager.isGameActive == true)
         {
-            for (int i = 0; i < speedLimit; i++)
+            if (speed < 320.0f)
             {
-                speed += 0.01f;
+                for (int i = 0; i < speedLimit; i++)
+                {
+                    speed += 0.01f;
+                }
             }
-        }
 
-        // When game is not over and has the "BackgroundUp" tag
-        if (/*!playerControllerScript.isGameOver == false && */gameObject.CompareTag("BackgroundUp"))
-        {
-            transform.Translate(Vector3.up * Time.deltaTime * speed);
-        }
-        
-        // When game is not over and has the "BackgroundDown" tag
-        if (/*!playerControllerScript.isGameOver == false && */gameObject.CompareTag("BackgroundDown"))
-        {
-            transform.Translate(Vector3.down * Time.deltaTime * speed);
-        }
-        
-        // When it has reached the optimal position to repeat
-        if (transform.position.z < startPos.z - repeatHeight)
-        {
-            transform.position = startPos;
+            // When game is not over and has the "BackgroundUp" tag
+            if (gameObject.CompareTag("BackgroundUp"))
+            {
+                transform.Translate(Vector3.up * Time.deltaTime * speed);
+            }
+
+            // When game is not over and has the "BackgroundDown" tag
+            if (gameObject.CompareTag("BackgroundDown"))
+            {
+                transform.Translate(Vector3.down * Time.deltaTime * speed);
+            }
+
+            // When it has reached the optimal position to repeat
+            if (transform.position.z < startPos.z - repeatHeight)
+            {
+                transform.position = startPos;
+            }
         }
     }
 }

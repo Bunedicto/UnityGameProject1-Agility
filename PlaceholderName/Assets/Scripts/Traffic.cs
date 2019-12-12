@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Traffic : MonoBehaviour
 {
-    private PlayerController playerControllerScript;
+    private GameManager gameManager;
     private AudioSource trafficAudio;
 
     public float speed;
@@ -20,8 +20,8 @@ public class Traffic : MonoBehaviour
         // Random speed for traffic
         speed = Random.Range(1.0f, 5.0f);
 
-        // Get player controller
-        playerControllerScript = GameObject.Find("Player").GetComponent<PlayerController>();
+        // Get game manager
+        gameManager = GameObject.Find("Game Manager").GetComponent<GameManager>();
 
         // Audio component for traffic
         trafficAudio = GetComponent<AudioSource>();
@@ -31,12 +31,12 @@ public class Traffic : MonoBehaviour
     void Update()
     {
         // When game is not over and traffic did not collide
-        if (!playerControllerScript.isGameOver && trafficHit == false)
+        if (gameManager.isGameActive && trafficHit == false)
         {
             transform.Translate(Vector3.back * speed * Time.deltaTime, Space.World);
         }
         // When game is not over and traffic did collide
-        if (!playerControllerScript.isGameOver && trafficHit == true)
+        if (gameManager.isGameActive && trafficHit == true)
         {
             transform.Translate(Vector3.back * (speed / 2) * Time.deltaTime, Space.World);
         }
@@ -51,6 +51,7 @@ public class Traffic : MonoBehaviour
             trafficHit = true;
             trafficAudio.PlayOneShot(collisionSfx);
             sparkEffects.Play();
+            Debug.Log("Move");
         }
     }
 }

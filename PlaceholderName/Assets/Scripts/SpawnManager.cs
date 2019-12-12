@@ -10,9 +10,9 @@ public class SpawnManager : MonoBehaviour
 
     public int lane;
     public float startDelay = 2;
-    public float spawnInterval = 1.0f;
-
-    private PlayerController playerControllerScript;
+    public float spawnInterval = 2.0f;
+    
+    private GameManager gameManager;
     
     // Start is called before the first frame update
     void Start()
@@ -23,8 +23,8 @@ public class SpawnManager : MonoBehaviour
         // Repeat spawn traffic
         InvokeRepeating("SpawnTraffic", startDelay, spawnInterval);
 
-        // Get player controller
-        playerControllerScript = GameObject.Find("Player").GetComponent<PlayerController>();
+        // Get game manager
+        gameManager = GameObject.Find("Game Manager").GetComponent<GameManager>();
     }
 
     // Update is called once per frame
@@ -69,7 +69,7 @@ public class SpawnManager : MonoBehaviour
         int trafficIndex = Random.Range(0, trafficPrefabs.Length);
 
         // When game is not over, spawn traffic
-        if (playerControllerScript.isGameOver == false)
+        if (gameManager.isGameActive == true)
         {
             Instantiate(trafficPrefabs[trafficIndex], LanePicker(), trafficPrefabs[trafficIndex].transform.rotation);
         }
